@@ -1,1 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proxy Generator</title>
+<link rel="stylesheet" href="style.css">
+</head>
 
+<body>
+
+<div class="container">
+
+    <h2>Proxy Generator</h2>
+
+    <!-- Username -->
+    <input id="username" placeholder="Enter Username">
+
+    <!-- Password -->
+    <input id="password" placeholder="Enter Password">
+
+    <!-- Country -->
+    <select id="country">
+        <option value="us">USA</option>
+        <option value="gb">UK</option>
+        <option value="de">Germany</option>
+        <option value="fr">France</option>
+    </select>
+
+    <!-- Session Time -->
+    <select id="time">
+        <option value="30">30 min</option>
+        <option value="60">60 min</option>
+    </select>
+
+    <button onclick="generateProxy()">Generate</button>
+
+    <!-- Output -->
+    <textarea id="output" placeholder="Proxy will appear here..."></textarea>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
