@@ -1,45 +1,576 @@
+Here is an HTML document that creates a proxy configuration tool with dynamic credential formatting based on your rules.
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Proxy Generator</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>ProxyForge • Smart Proxy Credential Builder</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(145deg, #0b1120 0%, #0a0f1a 100%);
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      padding: 2rem 1.5rem;
+      color: #eef2ff;
+    }
+
+    .container {
+      max-width: 1480px;
+      margin: 0 auto;
+    }
+
+    /* header */
+    .brand {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      margin-bottom: 2.2rem;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding-bottom: 1rem;
+    }
+    .brand h1 {
+      font-weight: 600;
+      font-size: 1.9rem;
+      background: linear-gradient(135deg, #FFFFFF 0%, #9bb6ff 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: -0.3px;
+    }
+    .badge {
+      background: #1e293b;
+      padding: 0.3rem 0.9rem;
+      border-radius: 60px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: #a5f3fc;
+      box-shadow: inset 0 0 0 1px rgba(165,243,252,0.2);
+    }
+
+    /* cards grid */
+    .dashboard {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 1.8rem;
+      margin-bottom: 2rem;
+    }
+
+    .card {
+      background: rgba(18, 25, 45, 0.65);
+      backdrop-filter: blur(2px);
+      border-radius: 2rem;
+      border: 1px solid rgba(71, 85, 105, 0.4);
+      box-shadow: 0 20px 35px -12px rgba(0,0,0,0.4);
+      transition: all 0.2s ease;
+      overflow: hidden;
+    }
+    .card:hover {
+      border-color: rgba(100, 150, 255, 0.5);
+      background: rgba(22, 32, 55, 0.8);
+    }
+    .card-header {
+      padding: 1.2rem 1.5rem;
+      background: rgba(0, 0, 0, 0.3);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      font-weight: 600;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card-header i {
+      font-size: 1.2rem;
+      opacity: 0.8;
+    }
+    .card-body {
+      padding: 1.5rem;
+    }
+
+    /* inputs & selects */
+    .input-group {
+      margin-bottom: 1.4rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .input-group label {
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #9ab3d5;
+    }
+    input, select, .mock-input {
+      background: #0f1422;
+      border: 1px solid #2d3a5e;
+      border-radius: 14px;
+      padding: 12px 16px;
+      font-size: 0.9rem;
+      color: white;
+      font-family: 'Menlo', 'Consolas', monospace;
+      transition: all 0.2s;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 2px rgba(59,130,246,0.3);
+    }
+    .helper {
+      font-size: 0.7rem;
+      color: #86a0c7;
+    }
+
+    /* region selector */
+    .region-search {
+      margin-bottom: 0.9rem;
+    }
+    .region-list {
+      max-height: 210px;
+      overflow-y: auto;
+      background: #0b0f1a;
+      border-radius: 18px;
+      border: 1px solid #253153;
+      padding: 0.3rem;
+    }
+    .region-option {
+      padding: 8px 14px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      display: flex;
+      justify-content: space-between;
+      transition: 0.1s;
+    }
+    .region-option:hover {
+      background: #1e2b44;
+    }
+    .region-option.selected {
+      background: #1e3a8a;
+      border-left: 3px solid #60a5fa;
+    }
+    .iso-code {
+      font-family: monospace;
+      font-weight: 600;
+      color: #93c5fd;
+    }
+
+    /* mode toggles */
+    .mode-buttons {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 1rem;
+    }
+    .mode-btn {
+      flex: 1;
+      background: #111827;
+      border: 1px solid #2d3a5e;
+      border-radius: 40px;
+      padding: 8px 0;
+      text-align: center;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    .mode-btn.active {
+      background: #2563eb;
+      border-color: #60a5fa;
+      color: white;
+      box-shadow: 0 4px 12px rgba(37,99,235,0.3);
+    }
+    .row-session {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .session-input {
+      flex: 2;
+    }
+
+    /* result box */
+    .result-box {
+      background: #030617;
+      border-radius: 1.5rem;
+      padding: 1.5rem;
+      margin-top: 1rem;
+      border: 1px solid #2a375a;
+    }
+    .proxy-line {
+      background: #0a0e18;
+      border-radius: 20px;
+      padding: 1rem;
+      font-family: monospace;
+      font-size: 0.85rem;
+      word-break: break-all;
+      margin: 0.8rem 0;
+      border-left: 4px solid #3b82f6;
+    }
+    .copy-btn {
+      background: #1e293b;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 28px;
+      color: white;
+      font-weight: 500;
+      cursor: pointer;
+      transition: 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .copy-btn:hover {
+      background: #2d3a66;
+    }
+    hr {
+      border-color: #1f2a44;
+      margin: 0.8rem 0;
+    }
+    .status-msg {
+      font-size: 0.75rem;
+      color: #90e0c0;
+    }
+    .footer-note {
+      text-align: center;
+      font-size: 0.7rem;
+      margin-top: 2rem;
+      opacity: 0.6;
+    }
+    @media (max-width: 780px) {
+      body { padding: 1rem; }
+      .dashboard { gap: 1rem; }
+    }
+  </style>
 </head>
-
 <body>
-
 <div class="container">
+  <div class="brand">
+    <h1>⚡ ProxyForge · Smart Credential Builder</h1>
+    <div class="badge">dynamic username transformation · sticky/session rules</div>
+  </div>
 
-    <h2>Proxy Generator</h2>
+  <div class="dashboard">
+    <!-- CREDENTIALS CARD -->
+    <div class="card">
+      <div class="card-header">🔐 ACCOUNT CREDENTIALS</div>
+      <div class="card-body">
+        <div class="input-group">
+          <label>USERNAME (or Full Proxy Username)</label>
+          <input type="text" id="rawUsername" placeholder="e.g., usermt01vrka  or  50201565-zone-custom-zone  or cpamarketing-zone" value="50201565-zone-custom-zone">
+          <div class="helper">✔ Supports base username or zone-style: <strong>zone-custom-zone</strong> or <strong>cpamarketing-zone</strong></div>
+        </div>
+        <div class="input-group">
+          <label>PASSWORD</label>
+          <input type="password" id="rawPassword" placeholder="••••••••" value="demoPass123">
+        </div>
+      </div>
+    </div>
 
-    <!-- Username -->
-    <input id="username" placeholder="Enter Username">
+    <!-- REGION SELECTION -->
+    <div class="card">
+      <div class="card-header">🌍 REGION SELECTION · 197 COUNTRIES</div>
+      <div class="card-body">
+        <div class="input-group region-search">
+          <input type="text" id="regionSearch" placeholder="Search country or ISO code..." autocomplete="off">
+        </div>
+        <div class="region-list" id="regionListContainer">
+          <!-- dynamic region list will be injected via js -->
+          <div class="helper" style="padding: 10px;">Loading regions...</div>
+        </div>
+        <div class="helper" style="margin-top: 8px;">Selected: <strong id="selectedRegionDisplay">United States (US)</strong></div>
+      </div>
+    </div>
 
-    <!-- Password -->
-    <input id="password" placeholder="Enter Password">
-
-    <!-- Country -->
-    <select id="country">
-        <option value="us">USA</option>
-        <option value="gb">UK</option>
-        <option value="de">Germany</option>
-        <option value="fr">France</option>
-    </select>
-
-    <!-- Session Time -->
-    <select id="time">
-        <option value="30">30 min</option>
-        <option value="60">60 min</option>
-    </select>
-
-    <button onclick="generateProxy()">Generate</button>
-
-    <!-- Output -->
-    <textarea id="output" placeholder="Proxy will appear here..."></textarea>
-
+    <!-- CONNECTION MODE + SESSION -->
+    <div class="card">
+      <div class="card-header">🔄 CONNECTION MODE · STICKY / ROTATION</div>
+      <div class="card-body">
+        <div class="mode-buttons">
+          <div class="mode-btn" data-mode="rotation">🔄 Rotation IP (New IP each request)</div>
+          <div class="mode-btn active" data-mode="sticky">📍 Sticky IP (same IP for duration)</div>
+        </div>
+        <div class="input-group">
+          <label>SESSION ID (sticky mode)</label>
+          <input type="text" id="sessionId" value="3qoy6ap5" placeholder="custom session id">
+        </div>
+        <div class="input-group">
+          <label>DURATION (minutes) · sticky session lifetime</label>
+          <input type="number" id="durationMin" value="30" min="1" max="240" step="1">
+        </div>
+        <div class="helper">💡 Sticky mode uses session + duration; Rotation mode ignores session/duration but retains region.</div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- HOST:PORT & PROXY OUTPUT -->
+  <div class="card" style="margin-bottom: 1.5rem;">
+    <div class="card-header">🌐 HTTP CONNECTION INFO · PROXY STRING</div>
+    <div class="card-body">
+      <div style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: space-between;">
+        <div style="flex: 2;">
+          <div class="input-group">
+            <label>HOST:PORT (gateway)</label>
+            <input type="text" id="hostPort" value="43.159.29.144:4950">
+            <div class="helper">Standard proxy gateway</div>
+          </div>
+        </div>
+        <div style="flex: 1;">
+          <div class="input-group">
+            <label>PROTOCOL</label>
+            <input type="text" value="HTTP ONLY" disabled style="background:#1a1f2e; color:#aaa;">
+          </div>
+        </div>
+      </div>
+      
+      <div class="result-box">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+          <span style="font-weight: 600;">🔗 PROXY FORMAT (host:port:username:password)</span>
+          <button class="copy-btn" id="copyProxyBtn">📋 Copy All</button>
+        </div>
+        <div class="proxy-line" id="proxyLinePreview">hostname:port:username:password</div>
+        <div class="status-msg" id="statusMessage">✅ Dynamic username transformation active</div>
+        <hr>
+        <div class="helper">
+          <strong>⚙️ Transformation rules:</strong><br>
+          • If username contains <strong>"50201565-zone-custom-zone"</strong> → transforms to <strong>resi-region-{REGION}-sessid-{sessionId}-sesstime-{duration}</strong><br>
+          • If username contains <strong>"cpamarketing-zone"</strong> → transforms to <strong>abc-region-{REGION}-session-{sessionId}-sessTime-{duration}</strong><br>
+          • Otherwise, keeps original username (still enhanced with region info in display? No, only these two rules apply exact string as shown)
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-note">
+    🧠 Live preview updates on every change — copy proxy string instantly. Region, session, duration, and zone pattern fully respected.
+  </div>
 </div>
 
-<script src="script.js"></script>
+<script>
+  // ---------- REGIONS DATABASE (197 countries, common set) ----------
+  const countriesList = [
+    "Afghanistan|AF", "Albania|AL", "Algeria|DZ", "Andorra|AD", "Angola|AO", "Antigua and Barbuda|AG",
+    "Argentina|AR", "Armenia|AM", "Australia|AU", "Austria|AT", "Azerbaijan|AZ", "Bahamas|BS", "Bahrain|BH",
+    "Bangladesh|BD", "Barbados|BB", "Belarus|BY", "Belgium|BE", "Belize|BZ", "Benin|BJ", "Bhutan|BT",
+    "Bolivia|BO", "Bosnia and Herzegovina|BA", "Botswana|BW", "Brazil|BR", "Brunei|BN", "Bulgaria|BG",
+    "Burkina Faso|BF", "Burundi|BI", "Cabo Verde|CV", "Cambodia|KH", "Cameroon|CM", "Canada|CA",
+    "Central African Republic|CF", "Chad|TD", "Chile|CL", "China|CN", "Colombia|CO", "Comoros|KM",
+    "Congo|CG", "Costa Rica|CR", "Croatia|HR", "Cuba|CU", "Cyprus|CY", "Czech Republic|CZ", "Denmark|DK",
+    "Djibouti|DJ", "Dominica|DM", "Dominican Republic|DO", "Ecuador|EC", "Egypt|EG", "El Salvador|SV",
+    "Equatorial Guinea|GQ", "Eritrea|ER", "Estonia|EE", "Eswatini|SZ", "Ethiopia|ET", "Fiji|FJ", "Finland|FI",
+    "France|FR", "Gabon|GA", "Gambia|GM", "Georgia|GE", "Germany|DE", "Ghana|GH", "Greece|GR", "Grenada|GD",
+    "Guatemala|GT", "Guinea|GN", "Guinea-Bissau|GW", "Guyana|GY", "Haiti|HT", "Honduras|HN", "Hungary|HU",
+    "Iceland|IS", "India|IN", "Indonesia|ID", "Iran|IR", "Iraq|IQ", "Ireland|IE", "Israel|IL", "Italy|IT",
+    "Jamaica|JM", "Japan|JP", "Jordan|JO", "Kazakhstan|KZ", "Kenya|KE", "Kiribati|KI", "Korea, North|KP",
+    "Korea, South|KR", "Kuwait|KW", "Kyrgyzstan|KG", "Laos|LA", "Latvia|LV", "Lebanon|LB", "Lesotho|LS",
+    "Liberia|LR", "Libya|LY", "Liechtenstein|LI", "Lithuania|LT", "Luxembourg|LU", "Madagascar|MG",
+    "Malawi|MW", "Malaysia|MY", "Maldives|MV", "Mali|ML", "Malta|MT", "Marshall Islands|MH", "Mauritania|MR",
+    "Mauritius|MU", "Mexico|MX", "Micronesia|FM", "Moldova|MD", "Monaco|MC", "Mongolia|MN", "Montenegro|ME",
+    "Morocco|MA", "Mozambique|MZ", "Myanmar|MM", "Namibia|NA", "Nauru|NR", "Nepal|NP", "Netherlands|NL",
+    "New Zealand|NZ", "Nicaragua|NI", "Niger|NE", "Nigeria|NG", "North Macedonia|MK", "Norway|NO", "Oman|OM",
+    "Pakistan|PK", "Palau|PW", "Panama|PA", "Papua New Guinea|PG", "Paraguay|PY", "Peru|PE", "Philippines|PH",
+    "Poland|PL", "Portugal|PT", "Qatar|QA", "Romania|RO", "Russia|RU", "Rwanda|RW", "Saint Kitts and Nevis|KN",
+    "Saint Lucia|LC", "Saint Vincent and the Grenadines|VC", "Samoa|WS", "San Marino|SM", "Sao Tome and Principe|ST",
+    "Saudi Arabia|SA", "Senegal|SN", "Serbia|RS", "Seychelles|SC", "Sierra Leone|SL", "Singapore|SG", "Slovakia|SK",
+    "Slovenia|SI", "Solomon Islands|SB", "Somalia|SO", "South Africa|ZA", "South Sudan|SS", "Spain|ES",
+    "Sri Lanka|LK", "Sudan|SD", "Suriname|SR", "Sweden|SE", "Switzerland|CH", "Syria|SY", "Taiwan|TW",
+    "Tajikistan|TJ", "Tanzania|TZ", "Thailand|TH", "Timor-Leste|TL", "Togo|TG", "Tonga|TO", "Trinidad and Tobago|TT",
+    "Tunisia|TN", "Turkey|TR", "Turkmenistan|TM", "Tuvalu|TV", "Uganda|UG", "Ukraine|UA", "United Arab Emirates|AE",
+    "United Kingdom|GB", "United States|US", "Uruguay|UY", "Uzbekistan|UZ", "Vanuatu|VU", "Vatican City|VA",
+    "Venezuela|VE", "Vietnam|VN", "Yemen|YE", "Zambia|ZM", "Zimbabwe|ZW"
+  ];
+  
+  let regionIso = "US";      // default United States
+  let regionName = "United States";
+  
+  function buildRegionOptions(filterText = "") {
+    const container = document.getElementById("regionListContainer");
+    if (!container) return;
+    const lowerFilter = filterText.toLowerCase();
+    const filtered = countriesList.filter(entry => {
+      const [country, iso] = entry.split("|");
+      return country.toLowerCase().includes(lowerFilter) || iso.toLowerCase().includes(lowerFilter);
+    });
+    if (filtered.length === 0) {
+      container.innerHTML = `<div class="helper" style="padding: 12px;">🌎 No matching country</div>`;
+      return;
+    }
+    let html = "";
+    filtered.forEach(entry => {
+      const [country, iso] = entry.split("|");
+      const selectedAttr = (iso === regionIso) ? 'selected' : '';
+      html += `<div class="region-option ${selectedAttr}" data-iso="${iso}" data-name="${country}">
+                <span>${country}</span>
+                <span class="iso-code">${iso}</span>
+              </div>`;
+    });
+    container.innerHTML = html;
+    // add click listeners
+    document.querySelectorAll('.region-option').forEach(el => {
+      el.addEventListener('click', (e) => {
+        const iso = el.getAttribute('data-iso');
+        const name = el.getAttribute('data-name');
+        if (iso) {
+          regionIso = iso;
+          regionName = name;
+          document.getElementById("selectedRegionDisplay").innerText = `${regionName} (${regionIso})`;
+          updateProxyPreview();
+          // re-render highlight
+          buildRegionOptions(document.getElementById("regionSearch")?.value || "");
+        }
+      });
+    });
+  }
+  
+  // search event
+  function setupRegionSearch() {
+    const searchInput = document.getElementById("regionSearch");
+    if (searchInput) {
+      searchInput.addEventListener("input", (e) => {
+        buildRegionOptions(e.target.value);
+      });
+    }
+  }
+  
+  // ---------- Core transformation logic ----------
+  function transformUsernameByRules(rawUser, region, sessionId, duration, isStickyMode) {
+    // rules exactly as defined:
+    // CASE 1: "50201565-zone-custom-zone" -> resi-region-{REGION}-sessid-{sessionId}-sesstime-{duration}
+    // CASE 2: "cpamarketing-zone" -> abc-region-{REGION}-session-{sessionId}-sessTime-{duration}
+    // If neither pattern matches (or partial but those exact zones?), we treat standard: return original (but we also might show fallback)
+    // However per requirement: when I use this username exactly or containing? we consider "contains" these identifiers.
+    const lowerRaw = rawUser.toLowerCase();
+    if (lowerRaw.includes("50201565-zone-custom-zone")) {
+      // build string resi-region-XX-sessid-XXXX-sesstime-XX
+      return `resi-region-${region.toUpperCase()}-sessid-${sessionId}-sesstime-${duration}`;
+    } 
+    else if (lowerRaw.includes("cpamarketing-zone")) {
+      return `abc-region-${region.toUpperCase()}-session-${sessionId}-sessTime-${duration}`;
+    }
+    // else if no match, keep original but we might attach anything? no: specs keep original as fallback
+    return rawUser;   // unchanged username
+  }
+  
+  // generate final proxy line: host:port:username:password
+  function generateProxyString() {
+    const hostPortRaw = document.getElementById("hostPort").value.trim();
+    const hostPort = hostPortRaw || "43.159.29.144:4950";
+    const rawUsername = document.getElementById("rawUsername").value.trim();
+    const rawPassword = document.getElementById("rawPassword").value || "";
+    
+    // get mode and session/duration
+    const isStickyActive = document.querySelector('.mode-btn.active')?.getAttribute('data-mode') === "sticky";
+    let sessionId = document.getElementById("sessionId").value.trim();
+    if (!sessionId) sessionId = "defaultSess";
+    let durationVal = parseInt(document.getElementById("durationMin").value, 10);
+    if (isNaN(durationVal)) durationVal = 30;
+    durationVal = Math.min(240, Math.max(1, durationVal));
+    
+    let finalUsername = rawUsername;
+    // apply transformation regardless of sticky? Yes transformation depends on username content + region + session + duration
+    // (even in rotation mode, the output username must follow the same rules? requirement says: when I use this username the string should look like that.
+    // So we use region + sessid + dur always for those zones, BUT sticky mode influences if we add session/duration values. Both modes we apply because session and duration are still defined in UI.
+    const regionForTransform = regionIso.toUpperCase();
+    finalUsername = transformUsernameByRules(rawUsername, regionForTransform, sessionId, durationVal, isStickyActive);
+    
+    // if sticky mode is false, we might still show session values? The requirement sample shows sessid/sesstime even for rotating? It's just part of the user transformation.
+    // session id and duration are still used in the final output for both modes (as shown in transformation specs)
+    // So we just compute as above.
+    
+    const proxyLine = `${hostPort}:${finalUsername}:${rawPassword}`;
+    return { proxyLine, finalUsername, hostPort, password: rawPassword };
+  }
+  
+  function updateProxyPreview() {
+    try {
+      const { proxyLine, finalUsername } = generateProxyString();
+      const previewDiv = document.getElementById("proxyLinePreview");
+      if (previewDiv) {
+        previewDiv.innerText = proxyLine;
+        previewDiv.style.fontFamily = "monospace";
+      }
+      // Also optionally show in status custom info
+      const msgDiv = document.getElementById("statusMessage");
+      if (msgDiv) {
+        msgDiv.innerHTML = `✨ Transformed username: <strong style="font-family: monospace;">${escapeHtml(finalUsername)}</strong> &nbsp;| region: ${regionIso.toUpperCase()} | session: ${document.getElementById("sessionId").value || "—"} | duration: ${document.getElementById("durationMin").value}m`;
+      }
+    } catch(e) { console.warn(e); }
+  }
+  
+  function escapeHtml(str) { return str.replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+  
+  // copy proxy to clipboard
+  async function copyProxy() {
+    const { proxyLine } = generateProxyString();
+    try {
+      await navigator.clipboard.writeText(proxyLine);
+      const copyBtn = document.getElementById("copyProxyBtn");
+      const originalText = copyBtn.innerText;
+      copyBtn.innerText = "✅ Copied!";
+      setTimeout(() => { copyBtn.innerText = originalText; }, 1500);
+    } catch (err) {
+      alert("Unable to copy, manual selection needed.");
+    }
+  }
+  
+  // attach UI events
+  function bindEvents() {
+    const inputs = ["rawUsername", "rawPassword", "hostPort", "sessionId", "durationMin"];
+    inputs.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener("input", () => updateProxyPreview());
+    });
+    // mode buttons
+    document.querySelectorAll('.mode-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        updateProxyPreview();
+      });
+    });
+    document.getElementById("copyProxyBtn")?.addEventListener("click", copyProxy);
+    // region changed listener also triggers update, already on region selection.
+  }
+  
+  // initial load
+  function init() {
+    buildRegionOptions("");
+    setupRegionSearch();
+    bindEvents();
+    // set default region iso UI
+    document.getElementById("selectedRegionDisplay").innerText = "United States (US)";
+    regionIso = "US";
+    regionName = "United States";
+    updateProxyPreview();
+    // manual refresh on region re-render
+    window.updatePreviewFromRegion = function() { updateProxyPreview(); };
+    // also on any region click, after rebuild ensure call update
+    const observer = new MutationObserver(() => {
+      document.querySelectorAll('.region-option').forEach(el => {
+        el.removeEventListener('click', regionClickHandler);
+        el.addEventListener('click', regionClickHandler);
+      });
+    });
+    function regionClickHandler(e) { 
+      const iso = this.getAttribute('data-iso');
+      if(iso) { regionIso = iso; regionName = this.getAttribute('data-name'); 
+        document.getElementById("selectedRegionDisplay").innerText = `${regionName} (${regionIso})`;
+        updateProxyPreview();
+        buildRegionOptions(document.getElementById("regionSearch")?.value || "");
+      }
+    }
+    observer.observe(document.getElementById("regionListContainer"), { childList: true, subtree: true });
+    document.querySelectorAll('.region-option').forEach(el => {
+      el.addEventListener('click', regionClickHandler);
+    });
+  }
+  
+  init();
+</script>
 </body>
 </html>
+```
