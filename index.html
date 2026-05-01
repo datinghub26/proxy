@@ -7,22 +7,26 @@
 </head>
 <body>
 
-<div class="container">
-  <h1>Proxy Generator</h1>
+<div class="card">
+  <h1>🌐 Proxy Generator</h1>
 
-  <input type="text" id="host" placeholder="Host (IP)">
-  <input type="text" id="port" placeholder="Port">
-  <input type="text" id="username" placeholder="Base Username">
-  <input type="text" id="password" placeholder="Password">
+  <div class="grid">
+    <input type="text" id="host" placeholder="Host (IP)">
+    <input type="text" id="port" placeholder="Port">
+    <input type="text" id="username" placeholder="Base Username">
+    <input type="text" id="password" placeholder="Password">
 
-  <input type="text" id="country" placeholder="Country Code (US, GB, DE)">
-  <input type="number" id="sessionTime" placeholder="Session Time (e.g. 30)">
-  <input type="number" id="count" placeholder="Number of Proxies">
+    <input type="text" id="country" placeholder="Country (US, GB)">
+    <input type="number" id="sessionTime" placeholder="Session Time">
+    <input type="number" id="count" placeholder="Amount">
+  </div>
 
-  <button onclick="generate()">Generate</button>
+  <div class="buttons">
+    <button onclick="generate()">Generate</button>
+    <button onclick="copy()">Copy</button>
+  </div>
 
-  <textarea id="output" placeholder="Generated proxies will appear here"></textarea>
-  <button onclick="copy()">Copy All</button>
+  <textarea id="output" placeholder="Generated proxies..."></textarea>
 </div>
 
 <script src="script.js"></script>
