@@ -1,38 +1,37 @@
-function randomString(length = 8) {
-    const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
-    let result = "";
-    for (let i = 0; i < length; i++) {
-        result += chars[Math.floor(Math.random() * chars.length)];
-    }
-    return result;
+function randomSession(length = 8) {
+  const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+  let result = "";
+  for (let i = 0; i < length; i++) {
+    result += chars[Math.floor(Math.random() * chars.length)];
+  }
+  return result;
 }
 
-function generateProxy() {
+function generate() {
+  const host = document.getElementById("host").value;
+  const port = document.getElementById("port").value;
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
+  const country = document.getElementById("country").value;
+  const sessionTime = document.getElementById("sessionTime").value;
+  const count = parseInt(document.getElementById("count").value);
 
-    const username = document.getElementById("username").value;
-    const password = document.getElementById("password").value;
-    const country = document.getElementById("country").value;
-    const time = document.getElementById("time").value;
+  let output = "";
 
-    const session = randomString();
+  for (let i = 0; i < count; i++) {
+    const sessid = randomSession(10);
 
-    let formattedUser = "";
+    const fullUser = `${username}-region-${country}-sessid-${sessid}-sesstime-${sessionTime}`;
 
-    // 🔥 RULE 1
-    if (username.includes("50201565-zone-custom-zone")) {
-        formattedUser = `resi-region-${country}-sessid-${session}-sesstime-${time}`;
-    }
+    output += `${host}:${port}:${fullUser}:${password}\n`;
+  }
 
-    // 🔥 RULE 2
-    else if (username.includes("cpamarketing-zone")) {
-        formattedUser = `abc-region-${country.toUpperCase()}-session-${session}-sessTime-${time}`;
-    }
+  document.getElementById("output").value = output;
+}
 
-    else {
-        formattedUser = username;
-    }
-
-    const proxy = `43.159.29.144:4950:${formattedUser}:${password}`;
-
-    document.getElementById("output").value = proxy;
+function copy() {
+  const textarea = document.getElementById("output");
+  textarea.select();
+  document.execCommand("copy");
+  alert("Copied!");
 }
