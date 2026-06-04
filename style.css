@@ -1,12 +1,13 @@
 *{
+    margin:0;
+    padding:0;
     box-sizing:border-box;
 }
 
 body{
-    margin:0;
-    font-family:'Segoe UI',sans-serif;
-    background:linear-gradient(135deg,#0f172a,#1e293b);
     min-height:100vh;
+    font-family:'Segoe UI',sans-serif;
+    background:linear-gradient(135deg,#4f46e5,#7c3aed);
     display:flex;
     justify-content:center;
     align-items:center;
@@ -14,79 +15,93 @@ body{
 }
 
 .card{
-    width:800px;
+    width:900px;
     max-width:100%;
-    background:rgba(255,255,255,.05);
-    backdrop-filter:blur(15px);
-    border-radius:18px;
-    padding:25px;
-    box-shadow:0 8px 30px rgba(0,0,0,.5);
+    background:rgba(255,255,255,.12);
+    backdrop-filter:blur(20px);
+    border:1px solid rgba(255,255,255,.15);
+    border-radius:24px;
+    padding:30px;
+    box-shadow:0 20px 60px rgba(0,0,0,.25);
 }
 
 h1{
+    color:white;
     text-align:center;
-    color:#fff;
-    margin-bottom:20px;
+    margin-bottom:25px;
 }
 
 .grid{
     display:grid;
     grid-template-columns:1fr 1fr;
-    gap:12px;
+    gap:15px;
 }
 
 input,
 select{
+    height:52px;
     width:100%;
-    padding:12px;
     border:none;
-    border-radius:10px;
-    background:rgba(255,255,255,.08);
-    color:#fff;
+    border-radius:12px;
+    padding:0 15px;
+    background:rgba(255,255,255,.15);
+    color:white;
     outline:none;
-    font-size:14px;
-}
-
-select option{
-    color:#000;
+    font-size:15px;
 }
 
 input::placeholder{
-    color:#cbd5e1;
+    color:rgba(255,255,255,.75);
+}
+
+select{
+    cursor:pointer;
+}
+
+select option{
+    background:white;
+    color:black;
 }
 
 .buttons{
     display:flex;
-    gap:10px;
-    margin-top:15px;
+    gap:12px;
+    margin-top:20px;
 }
 
 button{
     flex:1;
-    padding:12px;
+    height:52px;
     border:none;
-    border-radius:10px;
-    background:#22c55e;
-    color:#000;
-    font-weight:bold;
+    border-radius:12px;
+    background:white;
+    color:#4f46e5;
+    font-weight:700;
     cursor:pointer;
     transition:.2s;
 }
 
 button:hover{
-    transform:scale(1.03);
+    transform:translateY(-2px);
 }
 
 textarea{
     width:100%;
     height:260px;
-    margin-top:15px;
+    margin-top:20px;
     border:none;
-    border-radius:10px;
-    background:rgba(255,255,255,.08);
-    color:#22c55e;
-    padding:12px;
-    resize:vertical;
+    border-radius:12px;
+    padding:15px;
+    background:rgba(255,255,255,.12);
+    color:white;
     outline:none;
+    resize:vertical;
     font-family:Consolas,monospace;
+}
+
+@media(max-width:768px){
+
+    .grid{
+        grid-template-columns:1fr;
+    }
 }
