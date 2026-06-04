@@ -72,23 +72,37 @@ const ispData = {
 
 function updateISP() {
 
-    const country =
-        document.getElementById("country").value;
+    const countryElement =
+        document.getElementById("country");
 
-    const operator =
+    const operatorElement =
         document.getElementById("operator");
 
-    operator.innerHTML = "";
+    if (!countryElement || !operatorElement) {
+        return;
+    }
+
+    const country =
+        countryElement.value;
+
+    operatorElement.innerHTML = "";
+
+    if (!ispData[country]) {
+        return;
+    }
 
     ispData[country].forEach(isp => {
 
         const option =
             document.createElement("option");
 
-        option.value = isp.value;
-        option.textContent = isp.name;
+        option.value =
+            isp.value;
 
-        operator.appendChild(option);
+        option.textContent =
+            isp.name;
+
+        operatorElement.appendChild(option);
     });
 }
 
@@ -137,13 +151,18 @@ function generate() {
             document.getElementById("count").value
         );
 
-    if (!host || !port || !username || !password) {
+    if (
+        !host ||
+        !port ||
+        !username ||
+        !password
+    ) {
         alert("Please complete all fields.");
         return;
     }
 
     if (!count || count < 1) {
-        alert("Invalid amount.");
+        alert("Enter a valid amount.");
         return;
     }
 
@@ -175,11 +194,24 @@ function copyText() {
         return;
     }
 
-    navigator.clipboard.writeText(
-        textarea.value
-    );
-
-    alert("Copied!");
+    navigator.clipboard
+        .writeText(textarea.value)
+        .then(() => {
+            alert("Copied!");
+        });
 }
 
-window.onload = updateISP;
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        updateISP();
+
+        document
+            .getElementById("country")
+            .addEventListener(
+                "change",
+                updateISP
+            );
+    }
+);
