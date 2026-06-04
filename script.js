@@ -1,217 +1,50 @@
-const ispData = {
-
-    US: [
-        {
-            name: "Comcast",
-            value: "as7922_comcast_cable_communications_llc"
-        },
-        {
-            name: "Verizon",
-            value: "as701_verizon_business"
-        },
-        {
-            name: "AT&T",
-            value: "as7018_att_services_inc"
-        },
-        {
-            name: "Spectrum",
-            value: "as20115_charter_communications"
-        },
-        {
-            name: "Cox",
-            value: "as22773_cox_communications"
-        }
-    ],
-
-    DE: [
-        {
-            name: "Deutsche Telekom",
-            value: "as3320_deutsche_telekom_ag"
-        },
-        {
-            name: "Vodafone",
-            value: "as3209_vodafone_gmbh"
-        },
-        {
-            name: "O2 Germany",
-            value: "as6805_telefonica_germany"
-        },
-        {
-            name: "1&1",
-            value: "as8560_ionos_se"
-        },
-        {
-            name: "PYUR",
-            value: "as21413_pyur"
-        }
-    ],
-
-    PL: [
-        {
-            name: "Orange Polska",
-            value: "as5617_orange_polska"
-        },
-        {
-            name: "Play",
-            value: "as398101_p4_sp_zoo"
-        },
-        {
-            name: "T-Mobile Polska",
-            value: "as12912_t_mobile_polska"
-        },
-        {
-            name: "Plus",
-            value: "as8374_polkomtel"
-        },
-        {
-            name: "Netia",
-            value: "as12741_netia_sa"
-        }
-    ]
-};
-
-function updateISP() {
-
-    const countryElement =
-        document.getElementById("country");
-
-    const operatorElement =
-        document.getElementById("operator");
-
-    if (!countryElement || !operatorElement) {
-        return;
+US: [
+    {
+        name: "AT&T",
+        value: "AS7018"
+    },
+    {
+        name: "Comcast",
+        value: "AS7922"
+    },
+    {
+        name: "Verizon Business (AS701)",
+        value: "AS701"
+    },
+    {
+        name: "Cogent Communications",
+        value: "AS174"
+    },
+    {
+        name: "Verizon Business (AS22394)",
+        value: "AS22394"
+    },
+    {
+        name: "Level 3",
+        value: "AS3356"
+    },
+    {
+        name: "CenturyLink",
+        value: "AS209"
+    },
+    {
+        name: "Verizon Business (AS6167)",
+        value: "AS6167"
+    },
+    {
+        name: "T-Mobile USA",
+        value: "AS21928"
+    },
+    {
+        name: "Spectrum / Charter",
+        value: "AS20115"
+    },
+    {
+        name: "Cox Communications",
+        value: "AS22773"
+    },
+    {
+        name: "Frontier Communications",
+        value: "AS5650"
     }
-
-    const country =
-        countryElement.value;
-
-    operatorElement.innerHTML = "";
-
-    if (!ispData[country]) {
-        return;
-    }
-
-    ispData[country].forEach(isp => {
-
-        const option =
-            document.createElement("option");
-
-        option.value =
-            isp.value;
-
-        option.textContent =
-            isp.name;
-
-        operatorElement.appendChild(option);
-    });
-}
-
-function randomSession(length = 10) {
-
-    const chars =
-        "abcdefghijklmnopqrstuvwxyz0123456789";
-
-    let result = "";
-
-    for (let i = 0; i < length; i++) {
-
-        result += chars.charAt(
-            Math.floor(Math.random() * chars.length)
-        );
-    }
-
-    return result;
-}
-
-function generate() {
-
-    const host =
-        document.getElementById("host").value.trim();
-
-    const port =
-        document.getElementById("port").value.trim();
-
-    const username =
-        document.getElementById("username").value.trim();
-
-    const password =
-        document.getElementById("password").value.trim();
-
-    const country =
-        document.getElementById("country").value;
-
-    const operator =
-        document.getElementById("operator").value;
-
-    const sessionTime =
-        document.getElementById("sessionTime").value.trim();
-
-    const count =
-        parseInt(
-            document.getElementById("count").value
-        );
-
-    if (
-        !host ||
-        !port ||
-        !username ||
-        !password
-    ) {
-        alert("Please complete all fields.");
-        return;
-    }
-
-    if (!count || count < 1) {
-        alert("Enter a valid amount.");
-        return;
-    }
-
-    let output = "";
-
-    for (let i = 0; i < count; i++) {
-
-        const sessid =
-            randomSession(10);
-
-        const fullUser =
-            `${username}-region-${country}-isp-${operator}-sessid-${sessid}-sesstime-${sessionTime}`;
-
-        output +=
-            `${host}:${port}:${fullUser}:${password}\n`;
-    }
-
-    document.getElementById("output").value =
-        output;
-}
-
-function copyText() {
-
-    const textarea =
-        document.getElementById("output");
-
-    if (!textarea.value) {
-        alert("Nothing to copy.");
-        return;
-    }
-
-    navigator.clipboard
-        .writeText(textarea.value)
-        .then(() => {
-            alert("Copied!");
-        });
-}
-
-document.addEventListener(
-    "DOMContentLoaded",
-    () => {
-
-        updateISP();
-
-        document
-            .getElementById("country")
-            .addEventListener(
-                "change",
-                updateISP
-            );
-    }
-);
+]
