@@ -10,39 +10,40 @@
 
 <div class="card">
 
-  <h1>🌐 Proxy Generator</h1>
+    <h1>🌐 Proxy Generator</h1>
 
-  <div class="grid">
+    <div class="grid">
 
-    <input type="text" id="host" placeholder="Host (IP)">
-    <input type="text" id="port" placeholder="Port">
+        <input type="text" id="host" placeholder="Host">
+        <input type="text" id="port" placeholder="Port">
 
-    <input type="text" id="username" placeholder="Base Username">
-    <input type="text" id="password" placeholder="Password">
+        <input type="text" id="username" placeholder="Base Username">
+        <input type="text" id="password" placeholder="Password">
 
-    <input type="text" id="country" placeholder="Country (US, GB, DE)">
+        <select id="country" onchange="updateISP()">
+            <option value="US">United States</option>
+            <option value="DE">Germany</option>
+            <option value="PL">Poland</option>
+        </select>
 
-    <input
-      type="text"
-      id="operator"
-      placeholder="ISP (e.g. as7922_comcast_cable_communications_llc)"
-    >
+        <select id="operator"></select>
 
-    <input type="number" id="sessionTime" placeholder="Session Time">
+        <input type="number" id="sessionTime" placeholder="Session Time">
 
-    <input type="number" id="count" placeholder="Amount">
+        <input type="number" id="count" placeholder="Amount">
 
-  </div>
+    </div>
 
-  <div class="buttons">
-    <button onclick="generate()">Generate</button>
-    <button onclick="copyText()">Copy</button>
-  </div>
+    <div class="buttons">
+        <button onclick="generate()">Generate</button>
+        <button onclick="copyText()">Copy</button>
+    </div>
 
-  <textarea id="output" placeholder="Generated proxies..."></textarea>
+    <textarea id="output" placeholder="Generated proxies..."></textarea>
 
 </div>
 
 <script src="script.js"></script>
+
 </body>
 </html>
