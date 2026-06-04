@@ -1,33 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Proxy Generator</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proxy Generator</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="card">
+
   <h1>🌐 Proxy Generator</h1>
 
   <div class="grid">
+
     <input type="text" id="host" placeholder="Host (IP)">
     <input type="text" id="port" placeholder="Port">
+
     <input type="text" id="username" placeholder="Base Username">
     <input type="text" id="password" placeholder="Password">
 
-    <input type="text" id="country" placeholder="Country (US, GB)">
+    <input type="text" id="country" placeholder="Country (US, GB, DE)">
+
+    <input
+      type="text"
+      id="operator"
+      placeholder="ISP (e.g. as7922_comcast_cable_communications_llc)"
+    >
+
     <input type="number" id="sessionTime" placeholder="Session Time">
+
     <input type="number" id="count" placeholder="Amount">
+
   </div>
 
   <div class="buttons">
     <button onclick="generate()">Generate</button>
-    <button onclick="checkAllIPs()">Check Fraud Score</button>
-    <button onclick="copy()">Copy</button>
+    <button onclick="copyText()">Copy</button>
   </div>
 
   <textarea id="output" placeholder="Generated proxies..."></textarea>
+
 </div>
 
 <script src="script.js"></script>
