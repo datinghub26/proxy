@@ -1,4 +1,5 @@
 const ispData = {
+
     US: [
         { name: "AT&T (AS7018)", value: "AS7018" },
         { name: "Comcast (AS7922)", value: "AS7922" },
@@ -32,11 +33,11 @@ const ispData = {
 };
 
 function updateISP() {
+
     const country = document.getElementById("country");
     const operator = document.getElementById("operator");
 
     if (!country || !operator) {
-        console.log("Country or ISP dropdown missing");
         return;
     }
 
@@ -44,19 +45,36 @@ function updateISP() {
 
     operator.innerHTML = "";
 
+    // None option
+    const noneOption = document.createElement("option");
+    noneOption.value = "";
+    noneOption.textContent = "None";
+    operator.appendChild(noneOption);
+
+    if (!ispData[selectedCountry]) {
+        return;
+    }
+
     ispData[selectedCountry].forEach(isp => {
+
         const option = document.createElement("option");
+
         option.value = isp.value;
         option.textContent = isp.name;
+
         operator.appendChild(option);
     });
 }
 
 function randomSession(length = 10) {
-    const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+
+    const chars =
+        "abcdefghijklmnopqrstuvwxyz0123456789";
+
     let result = "";
 
     for (let i = 0; i < length; i++) {
+
         result += chars.charAt(
             Math.floor(Math.random() * chars.length)
         );
@@ -66,45 +84,101 @@ function randomSession(length = 10) {
 }
 
 function generate() {
-    const host = document.getElementById("host").value.trim();
-    const port = document.getElementById("port").value.trim();
-    const username = document.getElementById("username").value.trim();
-    const password = document.getElementById("password").value.trim();
-    const country = document.getElementById("country").value;
-    const operator = document.getElementById("operator").value;
-    const sessionTime = document.getElementById("sessionTime").value.trim();
-    const count = parseInt(document.getElementById("count").value);
+
+    const host =
+        document.getElementById("host").value.trim();
+
+    const port =
+        document.getElementById("port").value.trim();
+
+    const username =
+        document.getElementById("username").value.trim();
+
+    const password =
+        document.getElementById("password").value.trim();
+
+    const country =
+        document.getElementById("country").value;
+
+    const operator =
+        document.getElementById("operator").value;
+
+    const sessionTime =
+        document.getElementById("sessionTime").value.trim();
+
+    const count =
+        parseInt(
+            document.getElementById("count").value
+        );
+
+    if (
+        !host ||
+        !port ||
+        !username ||
+        !password
+    ) {
+        alert("Please complete all fields.");
+        return;
+    }
+
+    if (!count || count < 1) {
+        alert("Enter a valid amount.");
+        return;
+    }
 
     let output = "";
 
     for (let i = 0; i < count; i++) {
 
-        const sessid = randomSession();
+        const sessid = randomSession(10);
 
-        const fullUser =
-            `${username}-region-${country}-isp-${operator}-sessid-${sessid}-sesstime-${sessionTime}`;
+        let fullUser =
+            `${username}-region-${country}`;
+
+        // Add ISP only if selected
+        if (operator !== "") {
+            fullUser += `-isp-${operator}`;
+        }
+
+        fullUser +=
+            `-sessid-${sessid}-sesstime-${sessionTime}`;
 
         output +=
             `${host}:${port}:${fullUser}:${password}\n`;
     }
 
-    document.getElementById("output").value = output;
+    document.getElementById("output").value =
+        output;
 }
 
 function copyText() {
+
     const textarea =
         document.getElementById("output");
 
-    navigator.clipboard.writeText(textarea.value);
+    if (!textarea.value) {
+        alert("Nothing to copy.");
+        return;
+    }
 
-    alert("Copied!");
+    navigator.clipboard
+        .writeText(textarea.value)
+        .then(() => {
+            alert("Copied!");
+        });
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
 
-    updateISP();
+        updateISP();
 
-    document
-        .getElementById("country")
-        .addEventListener("change", updateISP);
-});
+        document
+            .getElementById("country")
+            .addEventListener(
+                "change",
+                updateISP
+            );
+    }
+);
