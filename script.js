@@ -77,7 +77,7 @@ function generate() {
         } else {
 
             fullUser =
-                `${username}_vlie-country-${country}` +
+                `${username}-country-${country}` +
                 `-ssid-${sessid}` +
                 `-sst-${sessionTime}`;
         }
